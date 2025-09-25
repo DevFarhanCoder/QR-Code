@@ -12,8 +12,8 @@ When someone scans your QR code:
 
 ## 🚀 Live Demo
 
-**QR Generator**: [Create your QR codes here](https://yourusername.github.io/qr-data-collector/hdfc-qr.html)
-**Admin Panel**: [View collected data](https://yourusername.github.io/qr-data-collector/universal-collector.html?admin=true)
+**QR Generator**: [Create your QR codes here](https://qr-code-roan-pi.vercel.app/hdfc-qr.html)
+**Admin Panel**: [View collected data](https://qr-code-roan-pi.vercel.app/universal-collector.html?admin=true)
 
 ## 📱 How to Use
 
@@ -68,12 +68,12 @@ Replace `yourusername` and `repo-name` in:
 
 **QR Code URL Format:**
 ```
-https://yourusername.github.io/repo-name/universal-collector.html?redirect=https%3A%2F%2Fmyoffers.smartbuy.hdfcbank.com%2Fhome
+https://qr-code-roan-pi.vercel.app/universal-collector.html?redirect=https%3A%2F%2Fmyoffers.smartbuy.hdfcbank.com%2Fhome
 ```
 
 **Admin Panel:**
 ```
-https://yourusername.github.io/repo-name/universal-collector.html?admin=true
+https://qr-code-roan-pi.vercel.app/universal-collector.html?admin=true
 ```
 
 ## 📥 CSV Export Features
