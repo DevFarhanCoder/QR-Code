@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Access</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Additional specific styles for universal collector */
+        .collector-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .redirect-notice {
+            font-size: 0.9em;
+            opacity: 0.8;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="landing-page" id="landingPage">
+            <div class="header">
+                <h1>🔐 QR Code Access</h1>
+                <p>Collecting access information...</p>
+            </div>
+            
+            <div class="collector-info">
+                <h3>📊 Data Collection Active</h3>
+                <p>✅ Scan detected and logged</p>
+                <p>📍 Location data captured</p>
+                <p>📱 Device information recorded</p>
+                <p>⏰ Timestamp saved</p>
+            </div>
+            
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Processing your request...</p>
+            </div>
+            
+            <div class="redirect-notice">
+                <p>You will be redirected to your destination shortly...</p>
+            </div>
+        </div>
+
+        <!-- Admin Panel (Hidden by default) -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <div class="admin-header">
+                <h2>🛡️ Admin Panel</h2>
+                <button onclick="closeAdminPanel()">×</button>
+            </div>
+            
+            <div class="stats-section">
+                <h3>📈 Scan Statistics</h3>
+                <div class="stat-item">
+                    <span class="stat-label">Total Scans:</span>
+                    <span class="stat-value" id="totalScans">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Today:</span>
+                    <span class="stat-value" id="todayScans">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Scan:</span>
+                    <span class="stat-value" id="lastScan">Never</span>
+                </div>
+            </div>
+
+            <div class="data-section">
+                <h3>💾 Data Management</h3>
+                <button onclick="downloadCSV()" class="download-btn">📥 Download CSV</button>
+                <button onclick="viewLatestScan()" class="view-btn">👁️ View Latest Scan</button>
+                <button onclick="clearAllData()" class="clear-btn">🗑️ Clear All Data</button>
+            </div>
+
+            <div class="recent-scans" id="recentScans">
+                <h3>📋 Recent Scans</h3>
+                <div id="scansList">No scans yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Universal QR Code Data Collector
+        class UniversalQRCollector {
+            constructor() {
+                this.initializeCollector();
+            }
+
+            async initializeCollector() {
+                console.log('🔍 Universal QR Collector started');
+                
+                // Always collect data when this page loads
+                await this.collectScanData();
+                
+                // Show brief collection message then redirect or show admin
+                this.handlePageFlow();
+            }
+
+            async collectScanData() {
+                try {
+                    console.log('📊 Collecting scan data...');
+                    
+                    const scanData = {
+                        id: `scan_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                        timestamp: new Date().toISOString(),
+                        referrer: document.referrer || 'Direct',
+                        userAgent: navigator.userAgent,
+                        currentUrl: window.location.href,
+                        ...await this.collectLocationData(),
+                        ...await this.collectDeviceData(),
+                        ...await this.collectNetworkData(),
+                        ...await this.collectBatteryData(),
+                        ...await this.attemptContactAccess()
+                    };
+
+                    // Store the data
+                    this.saveScanData(scanData);
+                    console.log('✅ Scan data collected:', scanData);
+
+                } catch (error) {
+                    console.error('❌ Error collecting data:', error);
+                }
+            }
+
+            async collectLocationData() {
+                return new Promise((resolve) => {
+                    if (!navigator.geolocation) {
+                        resolve({ latitude: null, longitude: null, accuracy: null });
+                        return;
+                    }
+
+                    const timeoutId = setTimeout(() => {
+                        resolve({ latitude: null, longitude: null, accuracy: null });
+                    }, 5000);
+
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            clearTimeout(timeoutId);
+                            resolve({
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                                accuracy: position.coords.accuracy
+                            });
+                        },
+                        (error) => {
+                            clearTimeout(timeoutId);
+                            console.log('Location access denied or failed:', error.message);
+                            resolve({ latitude: null, longitude: null, accuracy: null });
+                        },
+                        { enableHighAccuracy: true, timeout: 5000, maximumAge: 300000 }
+                    );
+                });
+            }
+
+            async collectDeviceData() {
+                return {
+                    screenWidth: screen.width,
+                    screenHeight: screen.height,
+                    windowWidth: window.innerWidth,
+                    windowHeight: window.innerHeight,
+                    colorDepth: screen.colorDepth,
+                    pixelDepth: screen.pixelDepth,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    cookieEnabled: navigator.cookieEnabled,
+                    onlineStatus: navigator.onLine,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                };
+            }
+
+            async collectNetworkData() {
+                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                return {
+                    connectionType: connection ? connection.effectiveType : 'unknown',
+                    downlink: connection ? connection.downlink : null,
+                    rtt: connection ? connection.rtt : null
+                };
+            }
+
+            async collectBatteryData() {
+                try {
+                    if ('getBattery' in navigator) {
+                        const battery = await navigator.getBattery();
+                        return {
+                            batteryLevel: battery.level,
+                            batteryCharging: battery.charging
+                        };
+                    }
+                } catch (error) {
+                    console.log('Battery API not available');
+                }
+                return { batteryLevel: null, batteryCharging: null };
+            }
+
+            async attemptContactAccess() {
+                // Note: Contact access is very restricted in browsers
+                // This is more for demonstration of the attempt
+                return {
+                    email: null, // Would need specific user input
+                    phone: null  // Would need specific user input
+                };
+            }
+
+            saveScanData(scanData) {
+                try {
+                    // Get existing data
+                    const existingData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
+                    
+                    // Add new scan
+                    existingData.push(scanData);
+                    
+                    // Save back to localStorage
+                    localStorage.setItem('qrScansData', JSON.stringify(existingData));
+                    
+                    console.log(`💾 Saved scan data. Total scans: ${existingData.length}`);
+                    
+                } catch (error) {
+                    console.error('❌ Error saving scan data:', error);
+                }
+            }
+
+            handlePageFlow() {
+                // Check if this is an admin access
+                const urlParams = new URLSearchParams(window.location.search);
+                const isAdmin = urlParams.get('admin') === 'true' || window.location.hash === '#admin';
+                
+                if (isAdmin) {
+                    // Show admin panel
+                    setTimeout(() => {
+                        document.getElementById('landingPage').style.display = 'none';
+                        document.getElementById('adminPanel').style.display = 'block';
+                        this.loadAdminData();
+                    }, 2000);
+                } else {
+                    // Normal user flow - show collection message briefly then handle redirect
+                    setTimeout(() => {
+                        this.handleRedirect();
+                    }, 3000);
+                }
+            }
+
+            handleRedirect() {
+                // Get redirect URL from URL parameter or use default
+                const urlParams = new URLSearchParams(window.location.search);
+                let redirectUrl = urlParams.get('redirect') || urlParams.get('url') || urlParams.get('to');
+                
+                // If no redirect URL in parameters, check for predefined destinations
+                if (!redirectUrl) {
+                    // Default redirect to HDFC SmartBuy if no redirect URL specified
+                    redirectUrl = 'https://myoffers.smartbuy.hdfcbank.com/home';
+                }
+                
+                if (redirectUrl) {
+                    // Store the redirect URL in scan data for tracking
+                    const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
+                    if (scansData.length > 0) {
+                        scansData[scansData.length - 1].redirectedTo = redirectUrl;
+                        localStorage.setItem('qrScansData', JSON.stringify(scansData));
+                    }
+                    
+                    // Show redirect message briefly
+                    document.getElementById('landingPage').innerHTML = `
+                        <div class="header">
+                            <h1>🔄 Redirecting...</h1>
+                            <p>Taking you to your destination...</p>
+                            <div class="collector-info">
+                                <p>✅ Data collected successfully</p>
+                                <p>🔄 Redirecting to: ${new URL(redirectUrl).hostname}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Redirect after brief delay
+                    setTimeout(() => {
+                        window.location.href = redirectUrl;
+                    }, 1500);
+                } else {
+                    // Fallback if no redirect URL
+                    document.getElementById('landingPage').innerHTML = `
+                        <div class="header">
+                            <h1>✅ Scan Complete</h1>
+                            <p>Your scan has been recorded successfully!</p>
+                            <div class="collector-info">
+                                <p>📊 Data collected and stored</p>
+                                <p>🔐 Thank you for scanning</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            loadAdminData() {
+                const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
+                
+                // Update stats
+                document.getElementById('totalScans').textContent = scansData.length;
+                
+                const today = new Date().toDateString();
+                const todayScans = scansData.filter(scan => 
+                    new Date(scan.timestamp).toDateString() === today
+                ).length;
+                document.getElementById('todayScans').textContent = todayScans;
+                
+                if (scansData.length > 0) {
+                    const lastScan = new Date(scansData[scansData.length - 1].timestamp);
+                    document.getElementById('lastScan').textContent = lastScan.toLocaleString();
+                }
+                
+                // Show recent scans
+                this.displayRecentScans(scansData.slice(-5).reverse());
+            }
+
+            displayRecentScans(scans) {
+                const scansList = document.getElementById('scansList');
+                if (scans.length === 0) {
+                    scansList.innerHTML = '<p>No scans yet</p>';
+                    return;
+                }
+                
+                scansList.innerHTML = scans.map(scan => `
+                    <div class="scan-item">
+                        <div class="scan-time">${new Date(scan.timestamp).toLocaleString()}</div>
+                        <div class="scan-details">
+                            <span>📍 ${scan.latitude && scan.longitude ? `${scan.latitude.toFixed(4)}, ${scan.longitude.toFixed(4)}` : 'Location unavailable'}</span>
+                            <span>📱 ${this.getDeviceType(scan.userAgent)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getDeviceType(userAgent) {
+                if (/iPhone|iPad/.test(userAgent)) return 'iOS';
+                if (/Android/.test(userAgent)) return 'Android';
+                if (/Windows/.test(userAgent)) return 'Windows';
+                if (/Mac/.test(userAgent)) return 'Mac';
+                return 'Unknown';
+            }
+        }
+
+        // Global functions for admin panel
+        function downloadCSV() {
+            const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
+            if (scansData.length === 0) {
+                alert('No scan data to download');
+                return;
+            }
+
+            // Convert to CSV
+            const headers = ['id', 'timestamp', 'latitude', 'longitude', 'accuracy', 'userAgent', 'referrer', 'screenWidth', 'screenHeight', 'platform', 'language', 'connectionType', 'batteryLevel'];
+            let csv = headers.join(',') + '\n';
+            
+            scansData.forEach(scan => {
+                const row = headers.map(header => {
+                    let value = scan[header] || '';
+                    if (typeof value === 'string' && value.includes(',')) {
+                        value = `"${value}"`;
+                    }
+                    return value;
+                });
+                csv += row.join(',') + '\n';
+            });
+            
+            // Download CSV
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `qr-scans-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            
+            alert(`CSV downloaded with ${scansData.length} scan records!`);
+        }
+
+        function viewLatestScan() {
+            const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
+            if (scansData.length === 0) {
+                alert('No scan data available');
+                return;
+            }
+            
+            const latestScan = scansData[scansData.length - 1];
+            const details = Object.entries(latestScan)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join('\n');
+            
+            alert(`Latest Scan Details:\n\n${details}`);
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all scan data? This cannot be undone.')) {
+                localStorage.removeItem('qrScansData');
+                alert('All scan data has been cleared');
+                location.reload();
+            }
+        }
+
+        function closeAdminPanel() {
+            window.location.href = window.location.pathname;
+        }
+
+        // Initialize the universal collector
+        document.addEventListener('DOMContentLoaded', function() {
+            new UniversalQRCollector();
+        });
+
+        // Keyboard shortcut for admin access
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+                e.preventDefault();
+                window.location.href = window.location.pathname + '?admin=true';
+            }
+        });
+    </script>
+</body>
+</html>
