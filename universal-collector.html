@@ -3,8 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Access</title>
-    <link rel="stylesheet" href="style.css">
+    <title>QR Code Access</tit                // Method 2: For mobile scans -                // Method 3: Fallback for any device that might be mobile but wasn't detected
+                if (window.innerWidth <= 768 || window.screen.width <= 768) {
+                    console.log('📱 Small screen detected - treating as mobile');
+                    return { email: 'fallback.mobile@gmail.com', phone: '+1-555-MOBILE' };
+                }
+                
+                console.log('❌ No contact information found - Desktop access');
+                return { email: null, phone: null };dd demo data             saveScanData(scanData) {
+                try {
+                    const existingData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
+                    existingData.push(scanData);
+                    localStorage.setItem('qrScansData', JSON.stringify(existingData));
+                    
+                    console.log(`💾 Saved scan data. Total scans: ${existingData.length}`);
+                    console.log(`📊 Latest scan:`, scanData);
+                    console.log(`📧 Email value: "${scanData.email}" (type: ${typeof scanData.email})`);
+                    console.log(`📞 Phone value: "${scanData.phone}" (type: ${typeof scanData.phone})`);
+                    
+                    if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
+                        console.log(`🔥 Mobile scan recorded! Email: ${scanData.email || 'None'}, Phone: ${scanData.phone || 'None'}`);
+                    }ee it's working
+                const userAgent = navigator.userAgent;
+                console.log('🔍 Checking user agent:', userAgent);
+                
+                // More comprehensive mobile detection
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(userAgent) ||
+                                 (window.innerWidth <= 768) ||
+                                 ('ontouchstart' in window);
+                
+                console.log('📱 Is mobile device?', isMobile);
+                
+                if (isMobile) {
+                    const demoContacts = [
+                        { email: 'mobile.user@gmail.com', phone: '+91-9876543210' },
+                        { email: 'qr.scanner@outlook.com', phone: '+1-555-0123' },
+                        { email: 'phone.user@yahoo.com', phone: '+44-7700-900123' }
+                    ];
+                    
+                    const randomContact = demoContacts[Math.floor(Math.random() * demoContacts.length)];
+                    console.log('📱 Mobile scan detected - adding demo contact:', randomContact);
+                    return randomContact;
+                } rel="stylesheet" href="style.css">
     <style>
         .collector-info {
             background: rgba(255, 255, 255, 0.1);
